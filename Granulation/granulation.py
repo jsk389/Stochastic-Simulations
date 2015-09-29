@@ -15,6 +15,8 @@ def granulation(time, sigma, tau):
     time - array: time stamps
     sigma - float: rms amplitude (ppm)
     tau - float: characteristic timescale (s)
+    Author: grd349
+    Edited by jsk389
     """
     
     # Compute cadence from time series - assuming regular sampling

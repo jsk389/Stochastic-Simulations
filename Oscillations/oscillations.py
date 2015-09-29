@@ -3,18 +3,17 @@
 import numpy as np
 import matplotlib.pyplot as pl
 
-"""
-Create time series of stochastic oscillations for a given damping rate
-(eta), amplitude and frequency. From De Ridder et al. 2006
-"""
-
 def stochastic(t, eta, amplitude, frequency):
     """
+    Create time series of stochastic oscillations for a given damping rate
+    (eta), amplitude and frequency. From De Ridder et al. 2006
     Usage:
     t - array: time stamps given in units of seconds
     eta - float: damping rate
     amplitude - float: amplitude of oscillations
     frequency - float: frequency of oscillations
+    Author: grd349
+    Edited by jsk389
     """
 
     # Compute cadence from time stamps
