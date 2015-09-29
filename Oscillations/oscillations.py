@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import numpy as np
 import matplotlib.pyplot as pl
@@ -18,7 +18,7 @@ def stochastic(t, eta, amplitude, frequency):
     """
 
     # Compute cadence from time stamps
-    cadence = t[1] - t[0]
+    dt = (t.max()-t.min()) / float(len(t))
 
     # Compute time between kicks for a given damping rate
     dtkick = 1.0 / eta / 100.0
@@ -30,29 +30,33 @@ def stochastic(t, eta, amplitude, frequency):
     # Standard deviation of white noise component
     sigmae = amplitude * np.sqrt(eta * dtkick)
 
-    npts_noise = np.round((t.max() - t.min()) / dtkick + 1)
+    N_noise = np.round((t.max() - t.min()) / dtkick + 1).astype(int)
 
     # Compute white noise components
-    bnoise = sigmae * np.random.randn(npts_noise)
-    cnoise = sigmae * np.random.randn(npts_noise)
+    bnoise = sigmae * np.random.randn(N_noise)
+    cnoise = sigmae * np.random.randn(N_noise)
 
-    bn = np.zeros(npts_noise)
-    cn = np.zeros(npts_noise)
+    bn, cn = np.zeros(N_noise), np.zeros(N_noise)
 
     # Amplitudes
     coeff = np.exp(-eta * dtkick)
-    for i in np.arange(npts_noise):
+    for i in range(N_noise):
         bn[i] = coeff * bn[i-1] + bnoise[i]
         cn[i] = coeff * cn[i-1] + cnoise[i]
 
     # Generate signal
-    npts_time = t.shape[0]
-    output = np.zeros(npts_time)
-    for i in np.arange(npts_time):
-        n = np.floor(t[i] / dtkick)
-        output[i] = np.exp(-eta * (t[i] - (n * dtkick))) * \
-	        (bn[n] * np.sin(6.28318 * frequency * t[i]) + \
-		        cn[n] * np.cos(6.28318 * frequency * t[i]))
+    N_time = len(t)
+    output = np.zeros(N_time)
+    n = np.floor(t / dtkick)
+
+    #output = np.exp(-eta * (t - (n*dtkick))) * (\
+    #         bn * np.sin(2.0*np.pi*frequency*t) + \
+    #         cn * np.cos(2.0*np.pi*frequency*t))
+    for i in range(N_time):
+        first = bn[n[i]] * np.sin(2.0 * np.pi * frequency * t[i])
+        second = cn[n[i]] * np.cos(2.0 * np.pi * frequency * t[i])
+        output[i] = np.exp(-eta * (t[i] - (n[i] * dtkick))) * \
+                          (first + second)
     
     return output
 
