@@ -2,7 +2,11 @@
 
 import numpy as np
 import matplotlib.pyplot as pl
+from numba import autojit
+import time
+import sys
 
+@autojit
 def stochastic(t, eta, amplitude, frequency):
     """
     Create time series of stochastic oscillations for a given damping rate
@@ -46,7 +50,7 @@ def stochastic(t, eta, amplitude, frequency):
     # Generate signal
     N_time = len(t)
     output = np.zeros(N_time)
-    n = np.floor(t / dtkick)
+    n = np.floor(t / dtkick).astype(int)
 
     #output = np.exp(-eta * (t - (n*dtkick))) * (\
     #         bn * np.sin(2.0*np.pi*frequency*t) + \
@@ -59,6 +63,7 @@ def stochastic(t, eta, amplitude, frequency):
     
     return output
 
+@autojit
 def lorentzian(t, linewidth, amplitude, frequency):
     """
     It is much easier to think of oscillation parameters in terms of the
@@ -80,17 +85,15 @@ def lorentzian(t, linewidth, amplitude, frequency):
 if __name__=="__main__":
     # Run quick example
     cadence = 40.0
-    days = 100.0 * 1.0
+    days = 100.0 * 1.0 * 73.0
     npts = days * 24.0 * 3600.0 / cadence
     linewidth = 1.0e-6
     amplitude = 100.0
     frequency = 200e-6
-    time = np.linspace(0, npts*cadence, npts)
+    t = np.linspace(0, npts*cadence, npts)
+    
 
-    y = lorentzian(time, linewidth, amplitude, frequency)
-
-    pl.figure(1)
-    pl.plot(time, y, 'k')
-    pl.xlabel(r'Time (s)')
-    pl.ylabel(r'Normalised Flux (ppm)')
-    pl.show()
+    s = time.time()
+    y = lorentzian(t, linewidth, amplitude, frequency)
+    print("Time taken for dataset of length {0} days is {1} s".format(int(days), time.time()-s))
+    
