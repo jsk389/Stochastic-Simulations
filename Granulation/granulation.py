@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from numba import autojit
 import numpy as np
 import matplotlib.pyplot as pl
 
@@ -8,6 +9,7 @@ Create time series of granulation for a given rms amplitude (sigma) and
 characteristic timescale (tau). From De Ridder et al. 2006.
 """
 
+@autojit
 def granulation(time, sigma, tau):
     """
     Create granulation time series
@@ -39,7 +41,8 @@ if __name__=="__main__":
 
     # Quick demo script
     dt = 40.0 # cadence
-    n_days = 365.0
+    n_years = 1.0
+    n_days = 365.0 * n_years
     N = (n_days * 86400.0) / dt    
     time = np.linspace(0, N*dt, N)
 
@@ -50,8 +53,8 @@ if __name__=="__main__":
     gran = granulation(time, sigma, tau)
 
     # Plot
-    pl.plot(time, gran, 'k')
-    pl.xlabel(r'Time (s)')
-    pl.ylabel(r'Normalised Flux (ppm)')
-    pl.show()
+    #pl.plot(time, gran, 'k')
+    #pl.xlabel(r'Time (s)')
+    #pl.ylabel(r'Normalised Flux (ppm)')
+    #pl.show()
 
