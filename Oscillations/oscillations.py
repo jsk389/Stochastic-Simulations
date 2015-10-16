@@ -27,8 +27,8 @@ def stochastic(t, eta, amplitude, frequency):
     dtkick = 1.0 / eta / 100.0
 
     # If time between kicks is less than cadence set equal to cadence
-    if dtkick < cadence:
-        dtkick = cadence
+    if dtkick < dt:
+        dtkick = dt
 
     # Standard deviation of white noise component
     sigmae = amplitude * np.sqrt(eta * dtkick)
@@ -95,5 +95,5 @@ if __name__=="__main__":
 
     s = time.time()
     y = lorentzian(t, linewidth, amplitude, frequency)
-    print("Time taken for dataset of length {0} days is {1} s".format(int(days), time.time()-s))
+    print("Time taken for dataset of length {0} days is {1} s", int(days), time.time()-s)
     
